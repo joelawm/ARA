@@ -3,6 +3,7 @@ use node::NodeType;
 
 use crate::graph::node::Node;
 use crate::graph::edge::Edge;
+use crate::log;
 
 pub mod node;
 pub mod edge;
@@ -34,21 +35,21 @@ impl Graph {
 		Graph {nodes: Vec::new(), edges: Vec::new(), calls: Vec::new(), layer: 0, layer_args: 0}
 	}
 	pub fn add_node(&mut self, mut node: Node) -> &Node {
+		log::debug::debug(&format!("Calls {:?}", self.calls).to_string());
+		log::debug::debug(&format!("Adding node: {:?}", node).to_string());
+
 		// Update the id of the node
 		let id = self.get_node_len();
 		node.update_id(id);
 
 		self.calls.push(Layer::new(id, self.layer, self.layer_args));
-		println!("Calls {:?}", self.calls);
-
-		println!("Adding node: {:?}", node);
 		self.nodes.push(node);
 		self.nodes.last().unwrap()
 	}
 	pub fn add_edge(&mut self, to: i16) {
 		let from = self.get_offset().unwrap();
 
-		println!("Adding edge from: {} to: {}", from.id, to);
+		log::debug::debug(&format!("Adding edge from: {} to: {}", from.id, to));
 
 		self.edges.push(Edge::new(from.id, to));
 	}
@@ -64,6 +65,7 @@ impl Graph {
 			node.add_local(local);
 		}
 	}
+
 	/// This function is used to grab the offset of the last layer.
 	/// Example:
 	/// function {
@@ -130,12 +132,9 @@ impl Graph {
 		false
 	}
 	pub fn clear_calls_layer(&mut self) {
-		println!("Clearing calls layer: {}", self.layer);
-		// Remove where the hash map value is equal to the current layer
 		self.calls.retain(|v| v.layer != self.layer);
 	}
 	pub fn clear_calls(&mut self) {
-		println!("Clearing calls");
 		self.calls.clear();
 	}
 	pub fn increase_layer(&mut self) {

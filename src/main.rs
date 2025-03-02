@@ -24,7 +24,7 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     let mut directories = BTree::new(Some(root));
     grab_files(&mut directories.get_root().as_mut().unwrap());
 
-    println!("{:#?}", directories);
+   //log::debug::debug(&directories);
 
     // Grab Workspace
     let workspace = toml::parse_toml();

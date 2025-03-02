@@ -1,5 +1,4 @@
 use std::fmt::{self, Debug, Formatter};
-use colored::Colorize;
 
 #[derive(Clone, PartialEq)]
 pub struct Node {
@@ -32,7 +31,7 @@ impl Node {
 
 impl Debug for Node {
 	fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-		write!(f, "Id: {} Key: {} Local: {:?} Literal: {:?} Type: {:?}", self.id, self.key.blue(), self.local, self.literal, self.node_type)
+		write!(f, "Id: {} Key: {} Local: {} Literal: {:?} Type: {:?}", self.id, self.key, self.local, self.literal, self.node_type)
 	}
 }
 

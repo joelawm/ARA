@@ -12,8 +12,16 @@ pub mod info {
 }
 
 pub mod debug {
-	use colored::Colorize;
+	use std::fmt::Display;
+
+use colored::Colorize;
 	use crate::config::APP;
+
+	pub fn debug<T: std::fmt::Debug + Display>(msg: &T) {
+		if APP.verbose {
+			println!("{} {}", "Debug:".blue().bold(), msg);
+		}
+	}
 
 	pub fn print_expr(loc: &str) {
 		if APP.verbose {
