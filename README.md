@@ -1,6 +1,9 @@
 # ARA (Automatic Rust API)
 This program is extremely simple in nature. It is designed to run through your program and create a graph of all the function calls and returns. This in return will give the program a understanding of the hierarchy and will allow us to generate a API Documentation based off what is coded and not what comment is written. The problem I had with a lot of existing tools is that it requires the user to write a comment to generate the documentation. This is not ideal as the comment can be outdated or incorrect. This program will generate the documentation based off the code itself instead.
 
+> [!IMPORTANT]  
+> Ara is still in development and is not ready for production use. This message will be removed once it is ready for production use.
+
 ## Features:
 - [x] Parse Rust code
 - [x] Parse Rust Workspace
