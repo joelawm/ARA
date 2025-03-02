@@ -1,5 +1,8 @@
+use colored::Colorize;
+use crate::config::APP;
+
 pub mod info {
-	use colored::Colorize;
+	use super::*;
 
 	pub fn print_visit_function(function: &str, file: &str) {
 		println!("{} {} {}{}", "Visiting Function:".blue().bold(), "fn".green(), function.green(), "()".green());
@@ -7,15 +10,15 @@ pub mod info {
 	}
 	
 	pub fn print_loc(loc: &str) {
-		println!("LOC: {}", loc.green());
+		if !APP.verbose {
+			println!("LOC: {}", loc.green());
+		}
 	}
 }
 
 pub mod debug {
+	use super::*;
 	use std::fmt::Display;
-
-use colored::Colorize;
-	use crate::config::APP;
 
 	pub fn debug<T: std::fmt::Debug + Display>(msg: &T) {
 		if APP.verbose {
@@ -29,9 +32,13 @@ use colored::Colorize;
 		}
 	}
 
-	pub fn warn(msg: &str) {
+	pub fn warn<T: std::fmt::Debug + Display>(msg: &T) {
 		if APP.verbose {
-			println!("{} {}", "Warning:".yellow().bold(), msg.yellow());
+			println!("{} {}", "Warning:".yellow().bold(), msg);
 		}
+	}
+
+	pub fn error<T: std::fmt::Debug + Display>(msg: &T) {
+		println!("{} {}", "Error:".red().bold(), msg);
 	}
 }

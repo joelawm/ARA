@@ -4,6 +4,7 @@ use node::NodeType;
 use crate::graph::node::Node;
 use crate::graph::edge::Edge;
 use crate::log;
+use crate::log::debug::{error, warn};
 
 pub mod node;
 pub mod edge;
@@ -34,6 +35,8 @@ impl Graph {
 	pub fn new() -> Graph {
 		Graph {nodes: Vec::new(), edges: Vec::new(), calls: Vec::new(), layer: 0, layer_args: 0}
 	}
+
+	/// This method adds a node to the graph and returns a reference to the node.
 	pub fn add_node(&mut self, mut node: Node) -> &Node {
 		log::debug::debug(&format!("Calls {:?}", self.calls).to_string());
 		log::debug::debug(&format!("Adding node: {:?}", node).to_string());
@@ -44,10 +47,24 @@ impl Graph {
 
 		self.calls.push(Layer::new(id, self.layer, self.layer_args));
 		self.nodes.push(node);
-		self.nodes.last().unwrap()
+		match self.nodes.last() {
+			Some(node) => node,
+			None => {
+				error(&"Node not found".to_string());
+				panic!("Exiting...");
+			},
+		}
 	}
+
+	/// This method adds an edge to the graph.
 	pub fn add_edge(&mut self, to: i16) {
-		let from = self.get_offset().unwrap();
+		let from = match self.get_offset() {
+			Some(offset) => offset,
+			None => {
+				warn(&format!("Failed to get offset for to {}", to));
+				return
+			},
+		};
 
 		log::debug::debug(&format!("Adding edge from: {} to: {}", from.id, to));
 
@@ -60,7 +77,13 @@ impl Graph {
 		}
 	}
 	pub fn add_local(&mut self, local: &str) {
-		let node_id = self.get_first().unwrap();
+		let node_id = match self.get_first() {
+			Some(id) => id,
+			None => {
+				warn(&format!("Failed to get first node and couldn't add {}", local));
+				return
+			},
+		};
 		if let Some(node) = self.get_node_mut(*node_id) {
 			node.add_local(local);
 		}
