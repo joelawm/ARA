@@ -5,6 +5,9 @@ This program is extremely simple in nature. It is designed to run through your p
 - [x] Parse Rust code
 - [x] Parse Rust Workspace
 - [x] Output API documentation to terminal
+- [ ] Axum Support
+- [ ] Actix Support
+- [ ] Rocket Support
 - [ ] Output OpenAPI documentation
 - [ ] Create Typescript interfaces based on the API's documentations
 
