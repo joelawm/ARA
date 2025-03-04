@@ -1,0 +1,12 @@
+[package]
+name = "tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+ara = { path = "../ara" }
+
+[[test]]
+name = "ara"
+path = "parse.rs"

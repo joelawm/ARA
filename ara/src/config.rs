@@ -1,11 +1,7 @@
 /*-------------
 /config.rs
 
-This file is for the connection to the server and tokens.
-
-Changelog:
---- Version 1.0 - Joe Meyer
-	-- Initial code release.
+This file is for the configuration of the application utilizing the clap crate.
 -------------*/
 use clap::Parser;
 

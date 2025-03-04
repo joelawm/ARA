@@ -45,7 +45,7 @@ impl<'ast> Visit<'ast> for State {
 		self.graph.increase_layer();
 		for stmt in &block.stmts {
 			if self.graph.get_depth() == 1 {
-			 	//info::print_loc(&quote! { #stmt }.to_string());
+			 	info::print_loc(&quote! { #stmt }.to_string());
 			}
 
 			if let syn::Stmt::Local(local) = stmt {
@@ -127,13 +127,11 @@ impl<'ast> Visit<'ast> for State {
 			self.graph.add_edge(node_id);
 
 			self.graph.increase_layer_args();
-			println!("Paren: {}", quote! { #call });
 			self.visit_expr(&call.expr);
 			self.graph.decrease_layer_args();
 		}
  
 		if let syn::Expr::MethodCall(ref call) = &*i {
-			println!("Method Call: {}", quote! { #call });
 			self.visit_expr_method_call(call);
 		}
 
@@ -170,7 +168,6 @@ impl<'ast> Visit<'ast> for State {
 		}
 
 		if let syn::Expr::Path(ref path) = &*i {
-			println!("Path: {}", quote! { #path });
 			// Check if the path is a local variable
 			let node = if self.graph.local_exists(&utils::create_path(path)) {
 				Node::new(&utils::create_path(path), NodeType::Local)

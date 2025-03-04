@@ -1,0 +1,17 @@
+[package]
+name = "ara"
+description = "Generate documentation from you Rust Source Code. This tool will generate the potential outputs for your entire rust program."
+version = "0.1.0"
+authors = ["Joe Meyer"]
+edition = "2021"
+
+[dependencies]
+syn = {version = "2.0.98", features = ["full", "visit"]}
+clap = { version = "4.5.31", features = ["derive"] }
+lazy_static = "1.4.0"
+quote = "1.0.38"
+tracing = "0.1.41"
+toml = "0.8.20"
+serde = "1.0.218"
+serde_derive = "1.0.136"
+colored = "3.0.0"

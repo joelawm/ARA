@@ -1,0 +1,9 @@
+[package]
+name = "ara-cli"
+description = "Ara CLI program."
+version = "0.1.0"
+authors = ["Joe Meyer"]
+edition = "2021"
+
+[dependencies]
+ara = { path = "../ara" }

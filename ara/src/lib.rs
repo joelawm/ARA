@@ -1,3 +1,8 @@
+/*-------------
+/lib.rs
+
+This file is for the connection to the server and tokens.
+-------------*/
 #[macro_use] extern crate quote;
 #[macro_use] extern crate lazy_static;
 use state::State;
@@ -8,23 +13,28 @@ use syn::visit::Visit;
 use input::{toml, tree::{BTree, Node}};
 use config::APP;
 
-mod config;
-mod graph;
-mod input;
-mod log;
-mod parse;
-mod stack;
-mod state;
+pub mod config;
+pub mod file;
+pub mod graph;
+pub mod input;
+pub mod log;
+pub mod parse;
+pub mod stack;
+pub mod state;
 
-pub fn main() -> Result<(), Box<dyn Error>> {
-    // Grab Directory and files
+
+/// Launch the application
+/// This need a bit of a rework to make it more modular but im not done with the application yet so
+/// this will do for now.
+pub fn launch() -> Result<(), Box<dyn Error>> {
+	// Grab Directory and files
     let mut root = Node::new();
     root.add_key(&APP.path);
 
     let mut directories = BTree::new(Some(root));
-    grab_files(&mut directories.get_root().as_mut().unwrap());
+    file::grab_files(&mut directories.get_root().as_mut().unwrap());
 
-    println!("{:#?}", directories);
+   //log::debug::debug(&directories);
 
     // Grab Workspace
     let workspace = toml::parse_toml();
@@ -51,29 +61,6 @@ pub fn main() -> Result<(), Box<dyn Error>> {
             visitor.clear_libs();
         }
     }
-
-    Ok(())
-}
-
-/// Grab all the files in the directory
-pub fn grab_files(directory: &mut Node) {
-    let paths = fs::read_dir(directory.to_string()).unwrap();
-
-    for path in paths {
-        let is_dir = path.as_ref().unwrap().path().is_dir();
-        let path = path.unwrap().path().to_str().unwrap().to_string();
-
-        if config::APP.ignore.iter().any(|ignore| path.contains(ignore)) {
-            continue;
-        }
-
-        if is_dir {
-            let mut node = Node::new();
-            node.add_key(&path);
-            grab_files(&mut node);
-            directory.add_child(node);
-        } else {
-            directory.add_key(&path);
-        }
-    }
+	
+	Ok(())
 }
