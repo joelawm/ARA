@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::log::debug::warn;
+
 #[derive(Debug)]
 pub struct Stack {
 	pub root: String,
@@ -38,7 +40,13 @@ impl Stack {
 		} else {
 			let search_layer = self.group_layer;
 			if self.stack.contains_key(&search_layer) {
-				let el = self.stack.get(&search_layer).unwrap();
+				let el = match self.stack.get(&search_layer) {
+					Some(el) => el,
+					None => {
+						warn(&format!("Failed to get element {}", search_layer));
+						&String::new()
+					},
+				};
 				self.stack.insert(search_layer, format!("{}::{}", el, value));
 			} else {
 				self.stack.insert(search_layer, value);

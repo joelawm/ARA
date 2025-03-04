@@ -9,6 +9,7 @@ use input::{toml, tree::{BTree, Node}};
 use config::APP;
 
 mod config;
+mod file;
 mod graph;
 mod input;
 mod log;
@@ -22,7 +23,7 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     root.add_key(&APP.path);
 
     let mut directories = BTree::new(Some(root));
-    grab_files(&mut directories.get_root().as_mut().unwrap());
+    file::grab_files(&mut directories.get_root().as_mut().unwrap());
 
    //log::debug::debug(&directories);
 
@@ -53,27 +54,4 @@ pub fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
-}
-
-/// Grab all the files in the directory
-pub fn grab_files(directory: &mut Node) {
-    let paths = fs::read_dir(directory.to_string()).unwrap();
-
-    for path in paths {
-        let is_dir = path.as_ref().unwrap().path().is_dir();
-        let path = path.unwrap().path().to_str().unwrap().to_string();
-
-        if config::APP.ignore.iter().any(|ignore| path.contains(ignore)) {
-            continue;
-        }
-
-        if is_dir {
-            let mut node = Node::new();
-            node.add_key(&path);
-            grab_files(&mut node);
-            directory.add_child(node);
-        } else {
-            directory.add_key(&path);
-        }
-    }
 }
