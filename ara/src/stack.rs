@@ -1,5 +1,9 @@
-use std::collections::HashMap;
+/*-------------
+/stack.rs
 
+This file is for the stack struct which is used to keep track of the current stack of use statements.
+-------------*/
+use std::collections::HashMap;
 use crate::log::debug::warn;
 
 #[derive(Debug)]

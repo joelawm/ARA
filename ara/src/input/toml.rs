@@ -1,4 +1,8 @@
-// Import the required dependencies.
+/*-------------
+/toml.rs
+
+This file is for parsing the toml file and returning the data about the workspace.
+-------------*/
 use serde_derive::Deserialize;
 use tracing::{error, warn};
 use std::fs;

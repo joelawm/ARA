@@ -1,3 +1,8 @@
+/*-------------
+/graph.rs
+
+This file is for handling graph operations.
+-------------*/
 use std::fmt::Debug;
 use crate::graph::{node::{Node, NodeType}, edge::Edge, layer::Layer};
 use crate::log::debug::{error, warn, debug};

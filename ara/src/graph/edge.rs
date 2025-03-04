@@ -1,3 +1,8 @@
+/*-------------
+/edge.rs
+
+This file is for handling edge operations in a graph.
+-------------*/
 use std::fmt::{self, Debug, Formatter};
 
 #[derive(Clone, PartialEq)]

@@ -1,3 +1,8 @@
+/*-------------
+/node.rs
+
+This file is for the node operations in the graph.
+-------------*/
 use std::fmt::{self, Debug, Formatter};
 
 #[derive(Clone, PartialEq)]

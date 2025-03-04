@@ -1,3 +1,8 @@
+/*-------------
+/tree.rs
+
+This file is for the tree operations in the file/folder structure of the project.
+-------------*/
 #[derive(Debug)]
 pub struct BTree {
     root: Option<Node>,

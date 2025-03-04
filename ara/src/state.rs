@@ -1,3 +1,8 @@
+/*-------------
+/state.rs
+
+This file handles the state of the application and orchestrates the graph and stack operations.
+-------------*/
 use std::fmt::Debug;
 use crate::config::APP;
 use crate::graph::Graph;

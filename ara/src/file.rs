@@ -1,3 +1,8 @@
+/*-------------
+/file.rs
+
+This file is for the handling the creation of the file tree for the application.
+-------------*/
 use std::fs;
 use tracing::error;
 use crate::{config, input::tree::Node};

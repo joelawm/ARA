@@ -67,6 +67,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "ara-cli"
+version = "0.1.0"
+dependencies = [
+ "ara",
+]
+
+[[package]]
 name = "clap"
 version = "4.5.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -241,6 +248,13 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tests"
+version = "0.1.0"
+dependencies = [
+ "ara",
 ]
 
 [[package]]

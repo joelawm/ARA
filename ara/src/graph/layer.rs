@@ -1,3 +1,9 @@
+/*-------------
+/layer.rs
+
+This file is tricky. Its is used in the graph and allows us to build the call layers to know how to connect them back to each other.
+-------------*/
+
 #[derive(Debug)]
 pub struct Layer {
 	pub id: i16,

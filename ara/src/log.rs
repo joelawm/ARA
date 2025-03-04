@@ -1,3 +1,9 @@
+/*-------------
+/log.rs
+
+This file is for the logging of the application and currently uses the colored crate for colorizing the output
+and its own methods for printing out the information. In the future this MAY be deprecated for tracing.
+-------------*/
 use colored::Colorize;
 use crate::config::APP;
 
