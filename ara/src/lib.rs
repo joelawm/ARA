@@ -11,7 +11,7 @@ use std::error::Error;
 use std::fs;
 use syn::visit::Visit;
 use input::{toml, tree::{BTree, Node}};
-use config::APP;
+use config::{Settings, APP};
 
 pub mod config;
 pub mod file;
@@ -22,12 +22,17 @@ pub mod parse;
 pub mod stack;
 pub mod state;
 
+pub struct Ara {
+    pub state: State,
+    settings: APP
+}
 
-/// Launch the application
-/// This need a bit of a rework to make it more modular but im not done with the application yet so
-/// this will do for now.
-pub fn launch() -> Result<(), Box<dyn Error>> {
-	// Grab Directory and files
+impl Ara {
+    /// Launch the application
+    /// This need a bit of a rework to make it more modular but im not done with the application yet so
+    /// this will do for now.
+    pub fn launch() -> Result<(), Box<dyn Error>> {
+        // Grab Directory and files
     let mut root = Node::new();
     root.add_key(&APP.path);
 
@@ -63,4 +68,30 @@ pub fn launch() -> Result<(), Box<dyn Error>> {
     }
 	
 	Ok(())
+    }
+
+    /// Set the current file
+	pub fn ignore(&mut self, ignore: Vec<String>) {
+		APP.ignore = ignore;
+	}
+
+	/// Set the function name
+	pub fn function_name(&mut self, function_name: Vec<String>) {
+		self.settings.function_name = function_name;
+	}
+
+	/// Set the debug mode
+	pub fn debug(&mut self, debug: bool) {
+		self.settings.debug = debug;
+	}
+
+	/// Set the verbose mode
+	pub fn verbose(&mut self, verbose: bool) {
+		self.settings.verbose = verbose;
+	}
+
+	/// Set the path
+	pub fn path(&mut self, path: String) {
+		self.settings.path = path;
+	}
 }
