@@ -46,7 +46,7 @@ impl State {
 
 	/// Updates the current file to the file were parsing
 	pub fn update_current_file(&mut self, file: String) {
-		let file = file.replace(&APP.path, "").replace(".rs", "").replace("/src/", "").replace("/", "").replace("mod", "");
+		let file = file.replace(&APP.get().unwrap().path, "").replace(".rs", "").replace("/src/", "").replace("/", "").replace("mod", "");
 		self.current_file = file;
 	}
 }

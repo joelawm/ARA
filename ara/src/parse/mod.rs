@@ -16,7 +16,7 @@ mod utils;
 impl<'ast> Visit<'ast> for State {
 	/// Visit functions and add them to the calls
 	fn visit_item_fn(&mut self, func: &'ast ItemFn) {
-		if !APP.function_name.contains(&func.sig.ident.to_string()) && !APP.function_name.is_empty() {
+		if !APP.get().unwrap().function_name.contains(&func.sig.ident.to_string()) && !APP.get().unwrap().function_name.is_empty() {
 			return
 		}
 

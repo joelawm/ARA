@@ -24,7 +24,7 @@ pub struct Workspace {
 
 /// This parses the toml file and returns data about what the workspace is/isn't.
 pub fn parse_toml() -> Data {
-    let filename = format!("{}/Cargo.toml", APP.path);
+    let filename = format!("{}/Cargo.toml", APP.get().unwrap().path);
 
     let contents = match fs::read_to_string(&filename) {
         Ok(c) => c,

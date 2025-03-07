@@ -16,7 +16,7 @@ pub mod info {
 	}
 	
 	pub fn print_loc(loc: &str) {
-		if !APP.verbose {
+		if !APP.get().unwrap().verbose {
 			println!("LOC: {}", loc.green());
 		}
 	}
@@ -27,19 +27,19 @@ pub mod debug {
 	use std::fmt::Display;
 
 	pub fn debug<T: std::fmt::Debug + Display>(msg: &T) {
-		if APP.verbose {
+		if APP.get().unwrap().verbose {
 			println!("{} {}", "Debug:".blue().bold(), msg);
 		}
 	}
 
 	pub fn print_expr(loc: &str) {
-		if APP.verbose {
+		if APP.get().unwrap().verbose {
 			println!("LOC: {}", loc.green());
 		}
 	}
 
 	pub fn warn<T: std::fmt::Debug + Display>(msg: &T) {
-		if APP.verbose {
+		if APP.get().unwrap().verbose {
 			println!("{} {}", "Warning:".yellow().bold(), msg);
 		}
 	}

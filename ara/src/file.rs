@@ -34,7 +34,7 @@ pub fn grab_files(directory: &mut Node) {
             }
         };
 
-        if config::APP.ignore.iter().any(|ignore| path.contains(ignore)) {
+        if config::APP.get().unwrap().ignore.iter().any(|ignore| path.contains(ignore)) {
             continue;
         }
 

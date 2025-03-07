@@ -3,10 +3,9 @@
 
 This file is for the configuration of the application utilizing the clap crate.
 -------------*/
+use std::cell::OnceCell;
 
-lazy_static! {
-	pub static ref APP: Settings = Settings::new();
-}
+pub const APP: OnceCell<Settings> = OnceCell::new();
 
 #[derive(Debug, Clone)]
 pub struct Settings {
