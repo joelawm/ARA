@@ -4,15 +4,16 @@
 This file is for the connection to the server and tokens.
 -------------*/
 #[macro_use] extern crate quote;
+use error::Error;
 use state::State;
 use tracing::error;
-use std::error::Error;
 use std::fs;
 use syn::visit::Visit;
 use input::{toml, tree::{BTree, Node}};
 use config::{Settings, APP};
 
 pub mod config;
+pub mod error;
 pub mod file;
 pub mod graph;
 pub mod input;
@@ -27,10 +28,19 @@ pub struct Ara {
 }
 
 impl Ara {
+    pub fn new() -> Self {
+        Ara {
+            state: State::new(),
+            settings: Settings::new()
+        }
+    }
     /// Launch the application
-    pub fn launch(self) -> Result<(), Box<dyn Error>> {
+    pub fn launch(&mut self) -> Result<&Self, Error> {
         // Set Settings
-        let res = APP.set(self.settings.clone());
+        if let Err(e) = APP.set(self.settings.clone()) {
+            error!("{:?}", e);
+            return Err(Error::NewSettingsError("Error setting settings".to_string()));
+        }
 
         // Grab Directory and files
         let mut root = Node::new();
@@ -52,7 +62,13 @@ impl Ara {
 
         for leaf in directories.get_all_leafs() {
             if leaf.ends_with(".rs") {
-                let content = fs::read_to_string(leaf.clone())?;
+                let content = match fs::read_to_string(leaf.clone()) {
+                    Ok(content) => content,
+                    Err(err) => {
+                        error!("Error reading file: {}", err);
+                        continue;
+                    }
+                };
                 let syntax = match syn::parse_file(&content) {
                     Ok(syntax) => syntax,
                     Err(err) => {
@@ -66,32 +82,38 @@ impl Ara {
                 visitor.clear_libs();
             }
         }
+        self.state = visitor;
         
-        Ok(())
+        Ok(self)
     }
 
     /// Set the current file
-	pub fn ignore(&mut self, ignore: Vec<String>) {
-		self.settings.ignore = ignore;
+	pub fn ignore(&mut self, ignore: &Vec<String>) -> &mut Self {
+		self.settings.ignore = ignore.to_owned();
+        self
 	}
 
 	/// Set the function name
-	pub fn function_name(&mut self, function_name: Vec<String>) {
-		self.settings.function_name = function_name;
+	pub fn function_name(&mut self, function_name: &Vec<String>) -> &mut Self {
+		self.settings.function_name = function_name.to_owned();
+        self
 	}
 
 	/// Set the debug mode
-	pub fn debug(&mut self, debug: bool) {
+	pub fn debug(&mut self, debug: bool) -> &mut Self {
 		self.settings.debug = debug;
+        self
 	}
 
 	/// Set the verbose mode
-	pub fn verbose(&mut self, verbose: bool) {
+	pub fn verbose(&mut self, verbose: bool) -> &mut Self {
 		self.settings.verbose = verbose;
+        self
 	}
 
 	/// Set the path
-	pub fn path(&mut self, path: String) {
-		self.settings.path = path;
+	pub fn path(&mut self, path: &str) -> &mut Self {
+		self.settings.path = path.to_string();
+        self
 	}
 }

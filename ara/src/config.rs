@@ -3,9 +3,9 @@
 
 This file is for the configuration of the application utilizing the clap crate.
 -------------*/
-use std::cell::OnceCell;
+use std::sync::OnceLock;
 
-pub const APP: OnceCell<Settings> = OnceCell::new();
+pub static APP: OnceLock<Settings> = OnceLock::new();
 
 #[derive(Debug, Clone)]
 pub struct Settings {
