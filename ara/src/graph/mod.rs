@@ -108,36 +108,42 @@ impl Graph {
 			},
 		};
 
-		// If the most recent call is a method we need to attach to most recent call or Local
-		if most_recent_node.node_type == NodeType::Method {
-			for calls in self.calls.iter().rev() {
-				let node_type = match self.get_node(calls.id) {
-					Some(node) => &node.node_type,
-					None => {
-						warn(&"Failed to get node type".to_string());
-						return None
-					}
-				};
-		
-				if (node_type == &NodeType::Local ||  node_type == &NodeType::Call) 
-				&& calls.args == last_call.args && calls.layer == last_call.layer {
-					return Some(&calls);
-				}
-			}
+		if self.calls.len() == 2 {
+			return Some(&self.calls[self.calls.len() - 2])
 		}
-    
-		// If its not a method we can iterate through the calls and check layers
-		for (i, calls) in self.calls.iter().enumerate() {
-			let offset = i + 1;
 
-			if offset == self.calls.len() {
-				return Some(&self.calls[self.calls.len() - 2])
-			}
-			if calls.args != self.calls[offset].args && calls.layer == self.calls[offset].layer {
+		for calls in self.calls.iter().rev().skip(1) {
+			// Get the current calls node
+			let node_type = match self.get_node(calls.id) {
+				Some(node) => &node.node_type,
+				None => {
+					warn(&"Failed to get node type".to_string());
+					return None
+				}
+			};
+
+			// Attach methods to each other when on the same layer
+			if most_recent_node.node_type == NodeType::Method
+				&& calls.args == last_call.args 
+				&& calls.layer == last_call.layer 
+				&& node_type == &NodeType::Method {
 				return Some(&calls);
 			}
+
+			if most_recent_node.node_type == NodeType::Method
+				&& calls.args == last_call.args 
+				&& calls.layer == last_call.layer {
+				return Some(&calls);
+			}
+
+			if calls.args+1 == last_call.args && calls.layer == last_call.layer {
+				return Some(&calls);
+			} 
 		}
 		None
+	}
+	pub fn get_layer_index(&self, id: i16) -> Option<usize> {
+		self.calls.iter().position(|call| call.id == id)
 	}
 	/// Get the last call in the call stack.
 	pub fn get_last_layer(&self) -> Option<&Layer> {
