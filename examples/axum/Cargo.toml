@@ -6,6 +6,7 @@ edition = "2021"
 
 [dependencies]
 axum = "0.8.1"
+sqlx = { version = "0.8.1", features = ["postgres", "macros", "runtime-tokio"] }
 tokio = { version = "1.38.0", features = ["full"] }
 
 #visual-lib = { path = "../visual-lib", features = ["cors", "logging"]}

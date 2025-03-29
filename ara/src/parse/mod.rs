@@ -208,35 +208,27 @@ impl<'ast> Visit<'ast> for State {
 		self.graph.decrease_layer_args();
 	}
 
-	///
+	/// Visit an arm of a match expression and traverse the body of the arm
 	fn visit_arm(&mut self, arm: &'ast syn::Arm) {
-		self.visit_expr(&arm.body);
+		if let syn::Expr::Block(ref block) = &*arm.body {
+			self.visit_block(&block.block);
+		} else {
+			self.graph.increase_layer();
+			self.visit_expr(&arm.body);
+			self.graph.decrease_layer();
+		}
 	}
 
-	/// 
+	/// Visit a return expression and traverse the expression if it exists
 	fn visit_expr_return(&mut self, i: &'ast syn::ExprReturn) {
 		if let Some(expr) = &i.expr {
 			self.visit_expr(expr);
 		}
 	}
 
-	///
+	/// Visit a match expression and traverse the arms
 	fn visit_expr_match(&mut self, call: &'ast syn::ExprMatch) {
-		if let syn::Expr::Call(call) = &*call.expr {
-			self.visit_expr_call(call);
-		}
-
-		if let syn::Expr::MethodCall(call) = &*call.expr {
-			self.visit_expr_method_call(call);
-		}
-
-		if let syn::Expr::Await(call) = &*call.expr {
-			self.visit_expr(&call.base);
-		}
-
-		if let syn::Expr::Block(call) = &*call.expr {
-			self.visit_block(&call.block);
-		}
+		self.visit_expr(&call.expr);
 
 		for arm in &call.arms {
 			self.visit_arm(arm);

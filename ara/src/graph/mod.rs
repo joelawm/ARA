@@ -53,9 +53,9 @@ impl Graph {
 			},
 		};
 
-		debug(&format!("Adding edge from: {} to: {}", from.id, to));
+		debug(&format!("Adding edge from: {} to: {}", from, to));
 
-		self.edges.push(Edge::new(from.id, to));
+		self.edges.push(Edge::new(from, to));
 	}
 	/// This method adds a literal a node.
 	pub fn add_literal(&mut self, literal: &str) {
@@ -91,7 +91,7 @@ impl Graph {
 	/// 	call(arg1, arg2)
 	/// }
 	/// Function is layer 0, Call is layer 1, arg1 and arg2 is layer 2
-	pub fn get_offset(&self) -> Option<&Layer> {
+	pub fn get_offset(&self) -> Option<i16> {
 		let last_call = match self.get_last_layer() {
 			Some(call) => call,
 			None => {
@@ -100,7 +100,7 @@ impl Graph {
 			},
 		};
 
-		let most_recent_node = match self.get_node(last_call.id) {
+		let last_node = match self.get_node(last_call.id) {
 			Some(node) => node,
 			None => {
 				warn(&"Failed to get most recent call".to_string());
@@ -108,39 +108,45 @@ impl Graph {
 			},
 		};
 
-		if self.calls.len() == 2 {
-			return Some(&self.calls[self.calls.len() - 2])
-		}
-
-		for calls in self.calls.iter().rev().skip(1) {
-			// Get the current calls node
-			let node_type = match self.get_node(calls.id) {
-				Some(node) => &node.node_type,
+		let mut id = None;
+		for call in self.calls.iter() {
+			let current_node = match self.get_node(call.id) {
+				Some(node) => node,
 				None => {
-					warn(&"Failed to get node type".to_string());
+					warn(&"Failed to get most recent call".to_string());
 					return None
-				}
+				},
 			};
-
-			// Attach methods to each other when on the same layer
-			if most_recent_node.node_type == NodeType::Method
-				&& calls.args == last_call.args 
-				&& calls.layer == last_call.layer 
-				&& node_type == &NodeType::Method {
-				return Some(&calls);
+			
+			if id.is_none() {
+				// If id is none, then we will set it to the first call
+				// This is used to find the first call in the layer
+				id = Some(call.id);
+				continue;
 			}
 
-			if most_recent_node.node_type == NodeType::Method
-				&& calls.args == last_call.args 
-				&& calls.layer == last_call.layer {
-				return Some(&calls);
+			if call.id == last_call.id {
+				break;
 			}
 
-			if calls.args+1 == last_call.args && calls.layer == last_call.layer {
-				return Some(&calls);
+			// Attach to the method
+			if last_node.node_type == NodeType::Method && call.args == last_call.args && call.layer == last_call.layer {
+				id = Some(call.id);
+				continue;
+			}
+
+			if call.args+1 == last_call.args && call.layer == last_call.layer {
+				id = Some(call.id);
+				continue;
 			} 
+
+			// Add to most recent call if the current node is a call and the layer matches
+			if current_node.node_type == NodeType::Call && call.layer+1 == last_call.layer && call.args == 0 {
+				id = Some(call.id);
+				continue;
+			}
 		}
-		None
+		id
 	}
 	pub fn get_layer_index(&self, id: i16) -> Option<usize> {
 		self.calls.iter().position(|call| call.id == id)
